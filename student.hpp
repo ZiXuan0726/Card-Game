@@ -2,17 +2,19 @@
 #include <string>
 #include <iostream>
 #include <limits>
+#include <iomanip>
 #include "questions.hpp"
 using namespace std;
 
+
 struct StudentNode
 {
-    
+
 };
 
 class Student {
 public:
-    
+
     Student* prev = nullptr;
     Student* next = nullptr;
     int studentID;
@@ -24,6 +26,7 @@ public:
     string q3Question;
     int q3Score;
     int totalScore = 0;
+
 
     Student(string name, int studentId) {
         this->name = name;
@@ -93,7 +96,7 @@ public:
         } while ((choice != 1 && choice != 2) || cin.fail());
     }
 
-    void selectDiscardedQuestion(int i,QuestionList* discardDeck, int choice) {
+    void selectDiscardedQuestion(int i, QuestionList* discardDeck, int choice) {
         int score = 0;
         string question;
         QuestionNode* selDiscardQuestion = discardDeck->getDiscardedQs(choice);
@@ -120,7 +123,7 @@ public:
         recordQs(i, question, score);
     }
 
- 
+
 
 
 };
@@ -130,13 +133,14 @@ public:
     int size = 0;
     Student* head;
     Student* tail;
+
     Student* createNewNode(string name) {
         Student* node = new Student(name, size + 1);
- 
+
         return node;
     }
 
-    
+
 
     void insertFront(string name) {
         Student* nextStu = createNewNode(name);
@@ -177,5 +181,97 @@ public:
             tail = nextStu;
         }
         size++;
+    }
+    
+
+    void bubbleSorting() {
+        bool swapped;
+        Student* current = nullptr;
+        Student* lastSorted = nullptr;
+        if (size <= 1)
+            return;
+        else
+        {
+
+            do {
+                swapped = false;
+                Student* current = head;
+
+                while (current != lastSorted) {
+                    if (current->totalScore < current->next->totalScore) {
+                        // Swap student data
+                        int tempID = current->studentID;
+                        string tempName = current->name;
+                        int tempTotalScore = current->totalScore;
+                        string tempQ1Question = current->q1Question;
+                        int tempQ1Score = current->q1Score;
+                        string tempQ2Question = current->q2Question;
+                        int tempQ2Score = current->q2Score;
+                        string tempQ3Question = current->q3Question;
+                        int tempQ3Score = current->q3Score;
+                        current->studentID = current->next->studentID;
+                        current->name = current->next->name;
+                        current->totalScore = current->next->totalScore;
+                        current->q1Question = current->next->q1Question;
+                        current->q1Score = current->next->q1Score;
+                        current->q2Question = current->next->q2Question;
+                        current->q2Score = current->next->q2Score;
+                        current->q3Question = current->next->q3Question;
+                        current->q3Score = current->next->q3Score;
+
+                        current->next->studentID = tempID;
+                        current->next->name = tempName;
+                        current->next->totalScore = tempTotalScore;
+                        current->next->q1Question = tempQ1Question;
+                        current->next->q1Score = tempQ1Score;
+                        current->next->q2Question = tempQ2Question;
+                        current->next->q2Score = tempQ2Score;
+                        current->next->q3Question = tempQ3Question;
+                        current->next->q3Score = tempQ3Score;
+
+                        swapped = true;
+                    }
+                    current = current->next;
+                }
+                lastSorted = current;
+
+            } while (swapped);
+        }
+    }
+
+    void displayLeaderboard() {
+        bool setw ;
+        int rank = 1;
+        Student* current = head;
+        while (current != nullptr) {
+            cout << std::setw(11) << rank << "\t";
+            cout << std::setw(11)  << current->name << "\t";
+            cout << std::setw(11) << current->q1Question << "(" << current->q1Score << ")\t";
+            cout << std::setw(11) << current->q2Question << "(" << current->q2Score << ")\t";
+            cout << std::setw(11) << current->q3Question << "(" << current->q3Score << ")\t";
+            cout << std::setw(11) << current->totalScore << "\t";
+            cout << endl << string(106, '-') << endl;
+
+            current = current->next;
+            rank++;
+            
+        }
+    }
+
+
+    void LeaderBoardshow()
+    {
+        cout << endl << "\t\t\tLeaderboard" << endl;
+        cout << string(106, '-') << endl;
+        cout << "||" << "Ranking\t";
+        cout << "||" << "Student\t";
+        cout << "||" << "Round 1\t";
+        cout << "||" << "Round 2\t";
+        cout << "||" << "Round 3\t";
+        cout << "||" << "Overall Score\t";
+        cout << endl << string(106, '-') << endl;
+
+        bubbleSorting();
+        displayLeaderboard();
     }
 };

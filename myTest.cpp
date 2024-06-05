@@ -1,4 +1,6 @@
 #include "student.hpp"
+#include "questions.hpp"
+
 
 int main() {
     string name;
@@ -13,7 +15,8 @@ int main() {
     for (int j = 0; j < 100; j++)
     {
         cout << "Enter your name: " << endl;
-        cin >> name;
+        cin.ignore();
+        getline(cin, name);
         Student* student = namelist.createNewNode(name);
 
         for (int i = 1; i <= 3; i++) {
@@ -52,8 +55,9 @@ int main() {
         cout << "Question 3: " << student->q3Question << endl;
         cout << "Your score: " << student->q3Score << endl;
         cout << "Your final score: " << student->totalScore << endl;
-        cout << string(106, '#') << endl;
+        cout << string(106, '#') << endl;  
 
+        namelist.LeaderBoardshow(); // Display the leaderboard
     }
     
 

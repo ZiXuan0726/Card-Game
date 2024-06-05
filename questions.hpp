@@ -3,7 +3,6 @@
 #include <string>
 #include <fstream>
 #include <sstream>
-#include <vector>
 using namespace std;
 
 struct Question {
@@ -160,30 +159,44 @@ public:
 
     //process line read from file and create new node
     QuestionNode* getNodeFromLine(const string& line) {
-        vector<string> lineVector;
         bool inQuote = false;
         stringstream ss;
+        string question, answer, score;
+        int i = 0;
         for (char c : line) {
             if (c == '"' && (ss.str().empty() || ss.str().back() != '\\')) {
                 inQuote = !inQuote;
             }
             else if (c == ',' && !inQuote) {
-                lineVector.push_back(ss.str());
+                if (i == 1) {
+                    question = ss.str();
+                    //cout << question << endl;
+                }
+                else if (i == 2) {
+                    answer = ss.str();
+                    //cout << answer << endl;
+                }
+                else if (i == 4) {
+                    score = ss.str();
+                    //cout << score << endl;
+                }
+                //lineVector.push_back(ss.str());
                 ss.str("");
                 ss.clear();
+                i++;
             }
             else {
                 ss << c;
             }
         }
 
-        return createNewNode(lineVector[1], lineVector[2], stoi(lineVector[4]));
+        return createNewNode(question, answer, stoi(score));
     }
 
     //add all questions into linked list
     void getAllQs(const string& fileName) {
-        vector<string> row;
-        string line;
+        string line, word;
+
         ifstream f(fileName);
         while (getline(f, line)) {
             QuestionNode* newQuestion = getNodeFromLine(line);
@@ -251,4 +264,3 @@ public:
     }
 
 };
-
