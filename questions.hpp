@@ -10,6 +10,7 @@ struct Question {
     string question;
     string answer;
     int score;
+    string questionID;
 };
 
 struct QuestionNode {
@@ -31,8 +32,9 @@ public:
         size = 0;
     }
 
-    QuestionNode* createNewNode(string question, string answer, int score) {
+    QuestionNode* createNewNode(string questionID, string question, string answer, int score) {
         QuestionNode* node = new QuestionNode();
+        node->data->questionID = questionID;
         node->data->discardID = 0;
         node->data->question = question;
         node->data->answer = answer;
@@ -53,7 +55,7 @@ public:
         return discardedNode;
     }
 
-    void insertFront(string question, string answer, int score) {
+    /*void insertFront(string question, string answer, int score) {
         QuestionNode* newQ = createNewNode(question, answer, score);
         if (head == nullptr) {
             head = newQ;
@@ -65,9 +67,9 @@ public:
             head = newQ;
         }
         size++;
-    }
+    }*/
 
-    void insertBack(string question, string answer, int score) {
+    /*void insertBack(string question, string answer, int score) {
         QuestionNode* newQ = createNewNode(question, answer, score);
         if (tail == nullptr) {
             head = newQ;
@@ -79,7 +81,7 @@ public:
             tail = newQ;
         }
         size++;
-    }
+    }*/
 
     void insertFront(QuestionNode* newQ) {
         if (head == nullptr) {
@@ -111,7 +113,7 @@ public:
         if (delNode == head) {
             if (head == tail) {
                 head = nullptr;
-                tail == nullptr;
+                tail = nullptr;
             }
             else {
                 head = head->next;
@@ -136,15 +138,26 @@ public:
         deleteQuestionNode(nodeToDiscard);
         nodeToDiscard->data->discardID = discardDeck->size + 1;
         nodeToDiscard->data->score = nodeToDiscard->data->score * 0.8;
+        nodeToDiscard->next = nullptr;
+        nodeToDiscard->prev = nullptr;
         discardDeck->insertBack(nodeToDiscard);
+        
+
+        
     }
 
     //retrieve question from discarded deck via id
     QuestionNode* getDiscardedQs(int ID) {
         QuestionNode* current = head;
-        while (current->data->discardID != ID) {
+        for (int i = 1; i < ID; i++) {
             current = current->next;
         }
+        
+        /*QuestionNode* current = head;
+        while (current->data->discardID != ID) {
+            current = current->next;
+        }*/
+        
         return current;
     }
 
@@ -161,7 +174,7 @@ public:
     QuestionNode* getNodeFromLine(const string& line) {
         bool inQuote = false;
         stringstream ss;
-        string question, answer, score;
+        string question, answer, score, questionID;
         int i = 0;
         for (char c : line) {
             if (c == '"' && (ss.str().empty() || ss.str().back() != '\\')) {
@@ -180,6 +193,9 @@ public:
                     score = ss.str();
                     //cout << score << endl;
                 }
+                else if (i == 0) {
+                    questionID = ss.str();
+                }
                 //lineVector.push_back(ss.str());
                 ss.str("");
                 ss.clear();
@@ -190,7 +206,7 @@ public:
             }
         }
 
-        return createNewNode(question, answer, stoi(score));
+        return createNewNode(questionID, question, answer, stoi(score));
     }
 
     //add all questions into linked list
@@ -243,6 +259,7 @@ public:
     }
 
     void printDiscardedQs() {
+        cout << size;
         if (size == 0) { cout << "There is no question discarded currently, please draw a new question" << endl; }
         else {
             QuestionNode* current = head;

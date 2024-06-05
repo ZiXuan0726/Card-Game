@@ -3,6 +3,8 @@
 #include <iostream>
 #include <limits>
 #include <iomanip>
+#include <fstream>
+#include <sstream>
 #include "questions.hpp"
 using namespace std;
 
@@ -32,18 +34,24 @@ public:
         this->name = name;
         this->studentID = studentId;
     }
+    Student(int studentId, string name) {
+        this->name = name;
+        this->studentID = studentId;
+        this->totalScore = 0;
+    }
 
-    void recordQs(int i, string question, int score) {
+    void recordQs(int i, string questionID, int score) {
+
         if (i == 1) {
-            this->q1Question = question;
+            this->q1Question = questionID;
             this->q1Score = score;
         }
         if (i == 2) {
-            this->q2Question = question;
+            this->q2Question = questionID;
             this->q2Score = score;
         }
         if (i == 3) {
-            this->q3Question = question;
+            this->q3Question = questionID;
             this->q3Score = score;
         }
     }
@@ -56,7 +64,7 @@ public:
         do {
             cout << endl << "Question: (marks: " << drewQuestion->data->score << ")" << endl;
             ql->printFormatedQuestion(drewQuestion->data->question);
-            question = drewQuestion->data->question;
+            question = drewQuestion->data->questionID;
             cout << endl << "Do you wish to answer the question (1) or discard it (2)? (1/2): ";
             cin >> choice;
 
@@ -65,7 +73,8 @@ public:
                 score = 0;
                 ql->discard(drewQuestion, discardDeck);
                 cout << "Question discarded" << endl;
-                recordQs(i, "Question Discarded", 0);
+                recordQs(i, "N/A", 0);
+                cout << discardDeck->head;
             }
             //answer
             else if (choice == 1) {
@@ -100,7 +109,7 @@ public:
         int score = 0;
         string question;
         QuestionNode* selDiscardQuestion = discardDeck->getDiscardedQs(choice);
-        question = selDiscardQuestion->data->question;
+        question = selDiscardQuestion->data->questionID;
         string ans;
         cout << endl << "Question: (marks: " << selDiscardQuestion->data->score << ")" << endl;
         discardDeck->printFormatedQuestion(selDiscardQuestion->data->question);
@@ -114,7 +123,7 @@ public:
             totalScore = totalScore + selDiscardQuestion->data->score;
             discardDeck->deleteQuestionNode(selDiscardQuestion);
         }
-        //answer wrong, question remains in answered deck
+        //answer wrong, question moved to answered deck
         else {
             cout << endl << "Incorrect answer! You earn 0 points." << endl;
             score = 0;
@@ -133,6 +142,8 @@ public:
     int size = 0;
     Student* head;
     Student* tail;
+    int id;
+    string name;
 
     Student* createNewNode(string name) {
         Student* node = new Student(name, size + 1);
@@ -140,6 +151,14 @@ public:
         return node;
     }
 
+    StudentList()
+    {
+    }
+    StudentList(int id, string name)
+    {
+        this->id = id;
+        this->name = name;
+    }
 
 
     void insertFront(string name) {
@@ -181,6 +200,43 @@ public:
             tail = nextStu;
         }
         size++;
+    }
+
+    void insertBack(Student* nextStu) {
+        if (tail == nullptr) {
+            head = nextStu;
+            tail = nextStu;
+        }
+        else {
+            nextStu->prev = tail;
+            tail->next = nextStu;
+            tail = nextStu;
+        }
+        size++;
+    }
+
+    void sort() {
+        bool swap = false;
+        do {
+            Student* current = head;
+            Student* nextNode = current->next;
+            swap = false;
+            for (int i = 0; i < size; i++) {
+                if (current->totalScore < nextNode->totalScore) {
+                    
+                    Student* temp = current;
+                    current->prev = nextNode->prev;
+                    current->next = nextNode->next;
+
+                    nextNode->prev = temp->prev;
+                    nextNode->prev = temp->prev;
+
+                }
+            }
+            if (swap == false) {
+                break;
+            }
+        } while (swap = true);
     }
     
 
@@ -271,7 +327,61 @@ public:
         cout << "||" << "Overall Score\t";
         cout << endl << string(106, '-') << endl;
 
-        bubbleSorting();
+        sort();
         displayLeaderboard();
     }
+
+    void getAllStudents(const string& fileName) {
+        string line,name;
+        int id;
+        ifstream f(fileName);
+        while (getline(f, line)) {
+         Student* studentname = getNodeFromLine(line);
+         insertBack(studentname);         
+        }
+        
+    }
+
+    Student* getStudent(int id)
+    {
+        Student* current = head;
+        while (current->studentID != id)
+        {
+            if (current->studentID == id)
+            {
+                return current;
+            }
+            current = current->next;  
+        }
+    }
+
+    Student* getNodeFromLine(const string& line) {
+        stringstream ss(line);
+        string idStr, name;
+        if (getline(ss, idStr, ',') && getline(ss, name)) {
+            if (!name.empty() && name.back() == ',') {
+                name.pop_back();
+            }
+            int id = stoi(idStr);
+            Student* newStudent = new Student(id, name);
+            return newStudent;
+        }
+        return nullptr;
+    }
+    void printname()
+    {
+        string name;
+        int id;
+        Student* current = head;
+
+        while (current != nullptr)
+        {
+            cout << "Name: " << current->name << endl;
+            cout << "ID: " << current->studentID << endl;
+            current = current->next;
+        }  
+    }
+
+    
+
 };

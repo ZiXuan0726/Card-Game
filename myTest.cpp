@@ -1,5 +1,6 @@
 #include "student.hpp"
 #include "questions.hpp"
+//#include "iostream"
 
 
 int main() {
@@ -8,30 +9,32 @@ int main() {
     QuestionList ql;
     QuestionList discardDeck;
     int choice;
+    Student* student = nullptr;
 
     ql.getAllQs("questions.csv");
     ql.shuffleQuestions();
+    namelist.getAllStudents("students.csv");
 
-    for (int j = 0; j < 100; j++)
-    {
-        cout << "Enter your name: " << endl;
-        cin.ignore();
-        getline(cin, name);
-        Student* student = namelist.createNewNode(name);
+    for (int roundNum = 1; roundNum <= 3; roundNum++) {
+        cout << string(106, '-') << endl;
+        cout << "Round: " << roundNum << endl << endl;
 
-        for (int i = 1; i <= 3; i++) {
-            cout << string(106, '-') << endl;
-            cout << "Round: " << i << endl << endl;
-
+        
+        for (int j = 1; j <= namelist.size; j++)
+        { 
             do {
+                student = namelist.getStudent(j);
+                
+                cout <<endl <<  "Name: " << student->name <<endl << "Tail: " << discardDeck.tail << endl << discardDeck.head << endl;
+                
                 discardDeck.printDiscardedQs();
                 cout << "Enter your choice: ";
                 cin >> choice;
                 if (choice == (discardDeck.size + 1)) { //draw card
-                    student->drawCard(i, &ql, &discardDeck);
+                    student->drawCard(roundNum, &ql, &discardDeck);
                 }
                 else if (choice <= discardDeck.size) { //discarded deck
-                    student->selectDiscardedQuestion(i, &discardDeck, choice);
+                    student->selectDiscardedQuestion(roundNum, &discardDeck, choice);
                 }
                 else { //input validation
                     cout << endl << "Invalid option, please try again!" << endl << endl;
@@ -39,13 +42,24 @@ int main() {
                     cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 }
             } while (choice < 1 || choice > discardDeck.size + 1 || cin.fail());
-
+            cout << endl << string(106, '-') << endl;
+            cout << "Id: " << student->studentID << ", Name: " << student->name << ", total score: " << student->totalScore << endl;
         }
-        namelist.insertFront(student);
+
+
+
+
+
+
+
+
+
+
+
 
         //ql.printList();
         //discardDeck.printDiscardedQs();
-        cout << string(106, '-') << endl;
+        /*cout << string(106, '-') << endl;
         cout << "Your name: " << student->name << endl;
         cout << "Your ID: " << student->studentID << endl;
         cout << "Question 1: " << student->q1Question << endl;
@@ -55,7 +69,7 @@ int main() {
         cout << "Question 3: " << student->q3Question << endl;
         cout << "Your score: " << student->q3Score << endl;
         cout << "Your final score: " << student->totalScore << endl;
-        cout << string(106, '#') << endl;  
+        cout << string(106, '#') << endl;  */
 
         namelist.LeaderBoardshow(); // Display the leaderboard
     }
