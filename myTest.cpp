@@ -71,5 +71,9 @@ int main() {
     studentTree->preorder();
 
     studentTree->displayStudentWithBFS();
+    QuestionList checkQuestionList;
+    checkQuestionList.getAllQs("questions.csv");
+    checkQuestionList.checkQuestion();
+
     return 0;
 }

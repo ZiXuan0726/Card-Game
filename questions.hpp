@@ -279,4 +279,57 @@ public:
         return (answer == correctAnswer);
     }
 
+    QuestionNode* getQuestion(string questionID)
+    {
+        QuestionNode* current = head;
+        while (current->data->questionID != questionID) {
+            current = current->next;
+        }
+        return current;
+
+    }
+
+    void checkQuestion() {
+        string id;
+        string ans, op;
+        bool decision = false;
+        bool option = true;
+        while (decision != true)
+        {
+            cout << "Do you want to read question details? (Y/N)" << endl;
+            cin >> ans;
+            if (ans == "Y" || ans == "y")
+            {
+                while (option == true) {
+                    cout << endl << "Input id: " << endl;
+                    cin >> id;
+                    QuestionNode* temp = getQuestion(id);
+                    printFormatedQuestion(temp->data->question);
+                    cout << "Correct answer is: " << temp->data->answer << endl;
+                    cout << string(106, '-') << endl;
+                    cout << "Do you want to continue reading question? (Y/N)" << endl;
+                    cin >> op;
+
+                    if (op == "N" || op == "n")
+                    {
+                        cout << "Thank you for reading the question. Hope you learn something today!" << endl;
+                        break;
+                    }
+                    else if (op != "Y" && op != "y")
+                        cout << "Invalid input! Please try again!" << endl;
+                }
+                
+                decision = true;
+            }
+            else if (ans == "N" || ans == "n")
+            {
+                break;
+            }
+            else {
+                cout << "Invalid Input! Please enter again." << endl;
+            }
+        }
+        
+    }
+
 };
