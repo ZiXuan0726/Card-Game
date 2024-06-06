@@ -124,14 +124,38 @@ public:
 		displayStudentWithBFS(current);
 	}
 
+	void printCentered(const string& text, int totalWidth) {
+		int padding = (totalWidth - text.size()) / 2;
+		cout << setw(padding + text.size()) << text << endl;
+	}
+
 	void displayStudentWithBFS(TreeNode* current) {
 		Queue* queue = new Queue();
 		queue->enqueue(current);
-		while (!queue->isEmpty()) {
+		string name, line;
+		for (int i = 1; i <= 30; i++) {
 			TreeNode* current = queue->dequeue();
-			cout << "Student Name: " << current->name << endl;
-			cout << "Total Points: " << current->totalScore << endl;
-			cout << endl;
+			
+			for (int i = 1; i <= 30; i++) {
+				name = "";
+				name = to_string(i) + ": " + current->name;
+				if (i == 1 || i == 3 || i == 7 || i == 15 || i == 30) {
+					line += name;
+					cout << endl;
+					printCentered(line, 110);
+					line = "";
+					//cout << "name" << endl;
+				}
+				else {
+					//cout << "name" << "\t";
+					line += name;
+					line += "    ";
+				}
+			}
+
+			//cout << "Student Name: " << current->name << endl;
+			//cout << "Total Points: " << current->totalScore << endl;
+			//cout << endl;
 			if (current->left != NULL) {
 				queue->enqueue(current->left);
 			}
