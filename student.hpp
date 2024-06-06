@@ -39,7 +39,22 @@ public:
         this->studentID = studentId;
         this->totalScore = 0;
     }
-
+    Student(int studentId, string name,int totalScore) {
+        this->name = name;
+        this->studentID = studentId;
+        this->totalScore = totalScore;
+    }
+    Student(int studentId, string name, string q1, int s1, string q2, int s2, string q3, int s3, int totalScore) {
+        this->name = name;
+        this->studentID = studentId;
+        this->q1Question = q1;
+        this->q1Score = s1;
+        this->q2Question = q2;
+        this->q2Score = s2;
+        this->q3Question = q3;
+        this->q3Score = s3;
+        this->totalScore = totalScore;
+    }
     void recordQs(int i, string questionID, int score) {
 
         if (i == 1) {
@@ -225,11 +240,24 @@ public:
                 if (current->totalScore < nextNode->totalScore) {
                     
                     Student* temp = current;
-                    current->prev = nextNode->prev;
+
+                   /* current->next = temp->next;
+                    current->prev = temp->prev;*/
+                    
+                    /*current->prev = nextNode->prev;
                     current->next = nextNode->next;
 
                     nextNode->prev = temp->prev;
-                    nextNode->prev = temp->prev;
+                    nextNode->next = temp->next;
+                    */
+                    temp->prev = current->prev;
+
+                    temp->next = nextNode->next;
+                    
+                    
+                    nextNode->prev = current->prev;
+                    current->prev = nextNode->next;
+                    current->next = temp->next;
 
                 }
             }
@@ -382,6 +410,33 @@ public:
         }  
     }
 
-    
+    Student* getHead() {
+    	return head;
+    }
+
+    void InsertionSortLinkedList() {
+        Student* sortedList = nullptr;
+        Student* temp = head;
+        while (temp != nullptr) {
+            Student* next = temp->next;
+            if (sortedList == nullptr || sortedList->totalScore < temp->totalScore) {
+                temp->next = sortedList;
+                sortedList = temp;
+            }
+            else {
+                Student* cur = sortedList;
+                while (cur->next != nullptr && cur->next->totalScore >= temp->totalScore) {
+                    cur = cur->next;
+                }
+                temp->next = cur->next;
+                cur->next = temp;
+            }
+            temp = next;
+        }
+        head = sortedList;
+
+        // release the memory
+        delete temp;
+    }
 
 };

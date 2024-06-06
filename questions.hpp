@@ -259,7 +259,6 @@ public:
     }
 
     void printDiscardedQs() {
-        cout << size;
         if (size == 0) { cout << "There is no question discarded currently, please draw a new question" << endl; }
         else {
             QuestionNode* current = head;

@@ -1,5 +1,6 @@
 #include "student.hpp"
 #include "questions.hpp"
+#include "Tree.hpp"
 //#include "iostream"
 
 
@@ -25,7 +26,7 @@ int main() {
             do {
                 student = namelist.getStudent(j);
                 
-                cout <<endl <<  "Name: " << student->name <<endl << "Tail: " << discardDeck.tail << endl << discardDeck.head << endl;
+                cout <<endl <<  "Name: " << student->name << endl;
                 
                 discardDeck.printDiscardedQs();
                 cout << "Enter your choice: ";
@@ -47,16 +48,6 @@ int main() {
         }
 
 
-
-
-
-
-
-
-
-
-
-
         //ql.printList();
         //discardDeck.printDiscardedQs();
         /*cout << string(106, '-') << endl;
@@ -70,10 +61,15 @@ int main() {
         cout << "Your score: " << student->q3Score << endl;
         cout << "Your final score: " << student->totalScore << endl;
         cout << string(106, '#') << endl;  */
-
+        namelist.InsertionSortLinkedList();
         namelist.LeaderBoardshow(); // Display the leaderboard
-    }
-    
 
+    }
+
+    Tree* studentTree = new Tree();
+    studentTree->buildCompleteBinaryTree(namelist.getHead());
+    studentTree->preorder();
+
+    studentTree->displayStudentWithBFS();
     return 0;
 }
